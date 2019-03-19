@@ -191,6 +191,15 @@ prompt_pure_precmd() {
 		export VIRTUAL_ENV_DISABLE_PROMPT=12
 	fi
 
+        # Handle NVM
+        psvar[13]=
+        if [[ -n "${NVM_BIN}" ]]; then
+          nvmVersion=$([[ $NVM_BIN =~ '([^/]+)/bin$' ]] && echo "$match[1]" || echo 'system')
+          if [[ "${nvmVersion}" != 'system' ]]; then
+            psvar[13]="(${nvmVersion})"
+          fi
+        fi
+
 	# Make sure VIM prompt is reset.
 	prompt_pure_reset_prompt_symbol
 
@@ -596,6 +605,7 @@ prompt_pure_setup() {
 
 	# if a virtualenv is activated, display it in grey
 	PROMPT='%(12V.%F{242}%12v%f .)'
+	PROMPT='%(13V.%F{242}%13v%f .)'
 
 	# prompt turns red if the previous command didn't exit with 0
 	PROMPT+='%(?.%F{magenta}.%F{red})${prompt_pure_state[prompt]}%f '
